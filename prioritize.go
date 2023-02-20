@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	v1 "k8s.io/api/core/v1"
 	schedulerapi "k8s.io/kubernetes/pkg/scheduler/apis/extender/v1"
 )
@@ -13,8 +11,5 @@ type Prioritize struct {
 }
 
 func (p Prioritize) Handler(args schedulerapi.ExtenderArgs) (*schedulerapi.HostPriorityList, error) {
-	log.Print("info of priority: ", args.Pod)
-	log.Print("PRIORITY WAS CALLED!!!!: ")
-	//fmt.Println(p.Func(*args.Pod, args.Nodes.Items))
 	return p.Func(*args.Pod, args.Nodes.Items)
 }

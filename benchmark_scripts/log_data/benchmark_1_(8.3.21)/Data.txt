@@ -1,6 +1,0 @@
-avg. cluster utilization in scenario:
-~51%
-
-job avg duration: 654 s ~11 min
-
-20% critical jobs

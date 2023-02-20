@@ -1,3 +1,4 @@
-link to the source first 2 benchmark runs: .gwf file: http://gwa.ewi.tudelft.nl/datasets/gwa-t-10-sharcnet
+Run the WorkloadGenerator.ipynb
+edit workloadGenerator.sh to start at your preffered starting time.
 
-link to second 2 benchmark runs: http://gwa.ewi.tudelft.nl/datasets/gwa-t-4-auvergrid
+run sh ./workloadGenerator.sh

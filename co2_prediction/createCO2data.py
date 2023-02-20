@@ -1,10 +1,11 @@
 import csv
 import datetime
 
-file_to_use = 'Germany_CO2_Signal_2020.csv'
+file_to_use = 'France_CO2_Signal_2018.csv'
+savename = 'avg_co2_france'
 
-co2_emission_column = 5  # 2018 column = 3, 2020 & 2021 = 5
-unix_timestamp_column = 3  # 2018 column = 1, 2020 & 2021 = 3
+co2_emission_column = 3  # 2018 column = 3, 2020 & 2021 = 5
+unix_timestamp_column = 1  # 2018 column = 1, 2020 & 2021 = 3
 
 a = 0
 
@@ -111,7 +112,7 @@ print("last output")
 print(median_weekday[0][0])
 
 print("generating .csv file")
-f = open('./average_co2_emissions.csv', 'w', newline='')
+f = open('./'+savename+'.csv', 'w', newline='')
 writer = csv.writer(f, lineterminator="\n")
 for week in range(0, len(week_array)):  # iterate for all days from
     for day in range(0, int(len(week_array[week]) / 24)):

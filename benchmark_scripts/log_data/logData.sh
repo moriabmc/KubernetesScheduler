@@ -1,6 +1,6 @@
 logFileName="utilization-logs.csv"
 #set certain time for benchmark start
-targetTime="today 16:50" #can also be tomorrow/today with time or simply now for immediate start
+targetTime="today 16:59" #can also be tomorrow/today with time or simply now for immediate start
 echo "$(date) sleeping until: $targetTime"
 sleep $(( $(date -f - +%s- <<< "$targetTime"$'\nnow') 0 ))
 
@@ -21,7 +21,7 @@ elapsed=$(( end_time - start_time ))
 echo $(date)
 echo "waiting for clear minute"
 echo "Date,CPUMili,CPUPercent,CpuPercentPrecise,MemoryBytesUsage,MemoryPercentUsage"
-calc() { awk "BEGIN{print $*}"; }
+calc() { awk "BEGIN{print $*}";}
 
 # waitToNextMinute  #not needed since time trigger is used now
 while [ $elapsed -lt 86400 ]
@@ -30,6 +30,7 @@ do
    #get logs from kubectl API
    kubePerformanceOutput=$(kubectl top nodes --use-protocol-buffers)
    kubeReservationOutput=$(kubectl describe nodes | sed -n '/Allocated resources:/,/Events:/{//!p;}' | sed '4q;d')
+   kubeSLAOutput=$(kubectl get pods -l realtime=critical --field-selector=status.phase=Pending --namespace=pod-benchmark | wc -l) #SLA Check
    #filtering block of the results
 
    #filtering cpuRealtimeData
@@ -39,12 +40,13 @@ do
    logCpuPercentPrecise=$(calc $(calc $CPUMiliNumber/$coreCount)/10)
    logMemoryUsageBytes=$(echo $kubePerformanceOutput | cut -d" " -f9)
    logMemoryUsagePercent=$(echo $kubePerformanceOutput | cut -d" " -f10)
+   
 
    #filtering cpuReservations
    logcpuMiliReservation=$(echo $kubeReservationOutput | awk '{print $2}' | sed 's/.$//')
    logcpuPercentReservation=$(echo $kubeReservationOutput | awk '{print $3}' | cut -c 2- | sed 's/.\{2\}$//')
    logcpuPreciseReservation=$(calc $(calc $logcpuMiliReservation/$coreCount)/10)
-   logLine=$logTimeStamp,$logCPUMili,$logCPUPercent,$logCpuPercentPrecise,$logMemoryUsageBytes,$logMemoryUsagePercent,$logcpuMiliReservation,$logcpuPercentReservation,$logcpuPreciseReservation
+   logLine=$logTimeStamp,$logCPUMili,$logCPUPercent,$logCpuPercentPrecise,$logMemoryUsageBytes,$logMemoryUsagePercent,$logcpuMiliReservation,$logcpuPercentReservation,$logcpuPreciseReservation,$kubeSLAOutput
    echo $logLine >> $logFileName
    echo $logLine
    

@@ -1,5 +1,9 @@
 #fill in the name of a docker hub Repository to push to (needs to be created and logged in in local docker account)
-IMAGE=tobpio/schedulerextender
+targetTime="today 16:55" #can also be tomorrow/today with time or simply now for immediate start
+echo "$(date) sleeping until: $targetTime"
+sleep $(( $(date -f - +%s- <<< "$targetTime"$'\nnow') 0 ))
+
+IMAGE=moriabmc/schedulerextender
 echo "starting deployment process"
 echo "building docker image"
 echo $(docker build . -t ${IMAGE}:latest)
